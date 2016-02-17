@@ -203,15 +203,104 @@ reset:          // disable interrupts
 
                 cli
 
+blue_screen:
+
+                lda.b #%000'00000
+                sta $2122
+                lda.b #%011111'00
+                sta $2122
+                lda.b #%111'00111
+                sta $2122
+                lda.b #%000111'00
+                sta $2122
+                lda.b #%110'01110
+                sta $2122
+                lda.b #%001110'01
+                sta $2122
+                lda.b #%111'11111
+                sta $2122
+                lda.b #%011111'11
+                sta $2122
+
+set_up_video:
+                lda.b #(4096 & $00ff)
+                sta $2116
+
+                lda.b #((4096 & $ff00) >> 8)
+                sta $2117
+
+                lda #%00000001
+                sta $4310
+
+                lda #$18
+                sta $4311
+
+                lda.b #(font & $0000ff)
+                sta $4312
+
+                lda.b #((font & $00ff00) >> 8)
+                sta $4313
+
+                lda.b #((font & $ff0000) >> 16)
+                sta $4314
+
+                stz $4315
+                lda #$40
+                sta $4316
+
+                lda #%00000010
+                sta $420b
+
+                lda #%00000001
+                sta $210b
+                stz $210c
+
+                lda.b #(32*2 + 2)
+                sta $2116
+                stz $2117
+
+                lda.b #(hello_world_top & $0000ff)
+                sta $4312
+
+                lda.b #((hello_world_top & $00ff00) >> 8)
+                sta $4313
+
+                lda.b #((hello_world_top & $ff0000) >> 16)
+                sta $4314
+
+                lda.b #(hello_world_top_end - hello_world_top)
+                sta $4315
+                stz $4316
+
+                lda #%00000010
+                sta $420b
+
+                lda.b #(32*3 + 2)
+                sta $2116
+                stz $2117
+
+                lda.b #(hello_world_bottom & $0000ff)
+                sta $4312
+
+                lda.b #((hello_world_bottom & $00ff00) >> 8)
+                sta $4313
+
+                lda.b #((hello_world_bottom & $ff0000) >> 16)
+                sta $4314
+
+                lda.b #(hello_world_bottom_end - hello_world_bottom)
+                sta $4315
+                stz $4316
+
+                lda #%00000010
+                sta $420b
+
+                lda #%00000001
+                sta $212c
+
 turn_on_screen:
                 lda #$0f
                 sta $2100
-
-blue_screen:
-                lda #%01111100
-
-                stz $2122
-                sta $2122
 
 set_up_hdma:
                 lda #%00000011
@@ -234,6 +323,38 @@ set_up_hdma:
 
 forever:
                 jmp forever
+
+hello_world_top:
+dw (32*2 + ('H' - 'A'))
+dw (32*2 + ('E' - 'A'))
+dw (32*2 + ('L' - 'A'))
+dw (32*2 + ('L' - 'A'))
+dw (32*2 + ('O' - 'A'))
+dw (32*0 + 10)
+dw (32*0 + 20)
+dw (32*2 + ('W' - 'A'))
+dw (32*2 + ('O' - 'A'))
+dw (32*2 + ('R' - 'A'))
+dw (32*2 + ('L' - 'A'))
+dw (32*2 + ('D' - 'A'))
+dw (32*0 + 14)
+hello_world_top_end:
+
+hello_world_bottom:
+dw (32*3 + ('H' - 'A'))
+dw (32*3 + ('E' - 'A'))
+dw (32*3 + ('L' - 'A'))
+dw (32*3 + ('L' - 'A'))
+dw (32*3 + ('O' - 'A'))
+dw (32*1 + 10)
+dw (32*1 + 20)
+dw (32*3 + ('W' - 'A'))
+dw (32*3 + ('O' - 'A'))
+dw (32*3 + ('R' - 'A'))
+dw (32*3 + ('L' - 'A'))
+dw (32*3 + ('D' - 'A'))
+dw (32*1 + 14)
+hello_world_bottom_end:
 
 hdma_table:
 db $07
