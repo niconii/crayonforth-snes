@@ -5,6 +5,9 @@ macro seek(variable offset) {
     base offset
 }
 
+seek(0x018000)
+insert font, "build/gfx/font.2bpp"
+
 // ROM HEADER
 seek(0x00ffc0)
   //123456789012345678901

@@ -5,7 +5,7 @@ TOOLSSRC = $(wildcard tools/*.rs)
 TOOLS    = $(patsubst tools/%.rs,build/tools/%,$(TOOLSSRC))
 
 GFXSRC   = $(wildcard gfx/*.pcx)
-GFX      = $(patsubst gfx/%.pcx,build/gfx/%.til,$(GFXSRC))
+GFX      = $(patsubst gfx/%.pcx,build/gfx/%,$(GFXSRC))
 
 all: dir $(TOOLS) $(GFX) build/$(OUTPUT)
 
@@ -20,7 +20,7 @@ build/$(OUTPUT): $(TOOLS) $(GFX)
 $(TOOLS): build/tools/% : tools/%.rs
 	rustc -O $< -o $@
 
-$(GFX): build/gfx/%.til : gfx/%.pcx
+$(GFX): build/gfx/% : gfx/%.pcx
 	build/tools/pcx2snes $<
 	mv $<.til $@
 
