@@ -245,7 +245,7 @@ set_up_video:
                 sta $4314
 
                 stz $4315
-                lda #$40
+                lda #$10
                 sta $4316
 
                 lda #%00000010
@@ -259,41 +259,29 @@ set_up_video:
                 sta $2116
                 stz $2117
 
-                lda.b #(hello_world_top & $0000ff)
-                sta $4312
-
-                lda.b #((hello_world_top & $00ff00) >> 8)
-                sta $4313
-
-                lda.b #((hello_world_top & $ff0000) >> 16)
-                sta $4314
-
-                lda.b #(hello_world_top_end - hello_world_top)
-                sta $4315
-                stz $4316
-
-                lda #%00000010
-                sta $420b
+                ldx.w #(hello_world & $00ffff)
+            -
+                lda $00,x
+                ora #$40
+                sta $2118
+                stz $2119
+                inx
+                cpx.w #(hello_world_end & $00ffff)
+                bne -
 
                 lda.b #(32*3 + 2)
                 sta $2116
                 stz $2117
 
-                lda.b #(hello_world_bottom & $0000ff)
-                sta $4312
-
-                lda.b #((hello_world_bottom & $00ff00) >> 8)
-                sta $4313
-
-                lda.b #((hello_world_bottom & $ff0000) >> 16)
-                sta $4314
-
-                lda.b #(hello_world_bottom_end - hello_world_bottom)
-                sta $4315
-                stz $4316
-
-                lda #%00000010
-                sta $420b
+                ldx.w #(hello_world & $00ffff)
+            -
+                lda $00,x
+                ora #$80
+                sta $2118
+                stz $2119
+                inx
+                cpx.w #(hello_world_end & $00ffff)
+                bne -
 
                 lda #%00000001
                 sta $212c
@@ -324,37 +312,23 @@ set_up_hdma:
 forever:
                 jmp forever
 
-hello_world_top:
-dw (32*2 + ('H' - 'A'))
-dw (32*2 + ('E' - 'A'))
-dw (32*2 + ('L' - 'A'))
-dw (32*2 + ('L' - 'A'))
-dw (32*2 + ('O' - 'A'))
-dw (32*0 + 10)
-dw (32*0 + 20)
-dw (32*2 + ('W' - 'A'))
-dw (32*2 + ('O' - 'A'))
-dw (32*2 + ('R' - 'A'))
-dw (32*2 + ('L' - 'A'))
-dw (32*2 + ('D' - 'A'))
-dw (32*0 + 14)
-hello_world_top_end:
+map 32, $00
+map 44, $01
+map 46, $02
+map 59, $03
+map 58, $04
+map 33, $05
+map 63, $06
+map 47, $07
+map 45, $08
+map 91, $09
+map 93, $0a
+map 48, $10, 10
+map 65, $1a, 26
 
-hello_world_bottom:
-dw (32*3 + ('H' - 'A'))
-dw (32*3 + ('E' - 'A'))
-dw (32*3 + ('L' - 'A'))
-dw (32*3 + ('L' - 'A'))
-dw (32*3 + ('O' - 'A'))
-dw (32*1 + 10)
-dw (32*1 + 20)
-dw (32*3 + ('W' - 'A'))
-dw (32*3 + ('O' - 'A'))
-dw (32*3 + ('R' - 'A'))
-dw (32*3 + ('L' - 'A'))
-dw (32*3 + ('D' - 'A'))
-dw (32*1 + 14)
-hello_world_bottom_end:
+hello_world:
+db "HELLO, WORLD!"
+hello_world_end:
 
 hdma_table:
 db $07
