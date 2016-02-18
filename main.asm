@@ -5,17 +5,21 @@ macro seek(variable offset) {
     base offset
 }
 
-seek(0x018000)
+// ensure rom is padded out to 4 MB
+seek($ffffff)
+db 0
+
+seek($018000)
 insert font, "build/gfx/font.2bpp"
 
 // ROM HEADER
-seek(0x00ffc0)
+seek($00ffc0)
   //123456789012345678901
 db "TEST ROM             " // cartridge title
-seek(0x00ffd5)
+seek($00ffd5)
 db %00110000 // fast LoROM
 db $00 // ROM, no RAM, no battery
-db $08 // 256 KB rom
+db $0c // 4 MB rom
 db $00 // no ram
 db $00 // international/japan
 db $33 // extended header
@@ -24,7 +28,7 @@ dw $ffff // checksum complement (placeholder)
 dw $0000 // checksum (placeholder)
 
 // EXTENDED HEADER
-seek(0x00ffb0)
+seek($00ffb0)
 db "N&" // maker code
 db "TEST" // game code
 db 0,0,0,0,0,0 // reserved
@@ -33,7 +37,7 @@ db $00 // no expansion ram
 db $00 // not a special version
 db $00 // no custom co-processor
 
-seek(0x00ffe0)
+seek($00ffe0)
 dw empty_handler
 dw empty_handler
 dw empty_handler
@@ -51,7 +55,7 @@ dw empty_handler
 dw reset
 dw empty_handler
 
-seek(0x008000)
+seek($008000)
 
 empty_handler:
                 rti
