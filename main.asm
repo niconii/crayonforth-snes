@@ -1,5 +1,7 @@
 arch snes.cpu
 
+include "io.asm"
+
 macro seek(variable offset) {
     origin ((offset & $7f0000) >> 1) | (offset & $007fff)
     base offset
@@ -210,108 +212,108 @@ reset:          // disable interrupts
 blue_screen:
 
                 lda.b #%000'00000
-                sta $2122
+                sta io.CGDATA
                 lda.b #%011111'00
-                sta $2122
+                sta io.CGDATA
                 lda.b #%111'00111
-                sta $2122
+                sta io.CGDATA
                 lda.b #%000111'00
-                sta $2122
+                sta io.CGDATA
                 lda.b #%110'01110
-                sta $2122
+                sta io.CGDATA
                 lda.b #%001110'01
-                sta $2122
+                sta io.CGDATA
                 lda.b #%111'11111
-                sta $2122
+                sta io.CGDATA
                 lda.b #%011111'11
-                sta $2122
+                sta io.CGDATA
 
 set_up_video:
                 lda.b #(4096 & $00ff)
-                sta $2116
+                sta io.VMADDL
 
                 lda.b #((4096 & $ff00) >> 8)
-                sta $2117
+                sta io.VMADDH
 
                 lda #%00000001
-                sta $4310
+                sta io.DMAP1
 
                 lda #$18
-                sta $4311
+                sta io.BBAD1
 
                 lda.b #(font & $0000ff)
-                sta $4312
+                sta io.A1T1L
 
                 lda.b #((font & $00ff00) >> 8)
-                sta $4313
+                sta io.A1T1H
 
                 lda.b #((font & $ff0000) >> 16)
-                sta $4314
+                sta io.A1B1
 
-                stz $4315
+                stz io.DAS1L
                 lda #$10
-                sta $4316
+                sta io.DAS1H
 
                 lda #%00000010
-                sta $420b
+                sta io.MDMAEN
 
                 lda #%00000001
-                sta $210b
-                stz $210c
+                sta io.BG12NBA
+                stz io.BG34NBA
 
                 lda.b #(32*2 + 2)
-                sta $2116
-                stz $2117
+                sta io.VMADDL
+                stz io.VMADDH
 
                 ldx.w #(hello_world & $00ffff)
             -
                 lda $00,x
                 ora #$40
-                sta $2118
-                stz $2119
+                sta io.VMDATAL
+                stz io.VMDATAH
                 inx
                 cpx.w #(hello_world_end & $00ffff)
                 bne -
 
                 lda.b #(32*3 + 2)
-                sta $2116
-                stz $2117
+                sta io.VMADDL
+                stz io.VMADDH
 
                 ldx.w #(hello_world & $00ffff)
             -
                 lda $00,x
                 ora #$80
-                sta $2118
-                stz $2119
+                sta io.VMDATAL
+                stz io.VMDATAH
                 inx
                 cpx.w #(hello_world_end & $00ffff)
                 bne -
 
                 lda #%00000001
-                sta $212c
+                sta io.TM
 
 turn_on_screen:
                 lda #$0f
-                sta $2100
+                sta io.INIDISP
 
 set_up_hdma:
                 lda #%00000011
-                sta $4300
+                sta io.DMAP0
 
                 lda #$21
-                sta $4301
+                sta io.BBAD0
 
                 lda.b #(hdma_table & $0000ff)
-                sta $4302
+                sta io.A1T0L
 
                 lda.b #((hdma_table & $00ff00) >> 8)
-                sta $4303
+                sta io.A1T0H
 
                 lda.b #((hdma_table & $ff0000) >> 16)
-                sta $4304
+                sta io.A1B0
 
                 lda #%00000001
-                sta $420c
+                sta io.HDMAEN
 
 forever:
                 jmp forever
