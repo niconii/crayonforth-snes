@@ -13,7 +13,7 @@ dir:
 	mkdir -p build/tools/
 	mkdir -p build/gfx/
 
-build/$(OUTPUT): $(TOOLS) $(GFX)
+build/$(OUTPUT): main.asm $(TOOLS) $(GFX)
 	bass -strict $(INPUT) -o build/$(OUTPUT)
 	build/tools/checksum build/$(OUTPUT)
 
