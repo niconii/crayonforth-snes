@@ -1,6 +1,8 @@
 INPUT    = main.asm
 OUTPUT   = program.sfc
 
+SOURCE   = $(wildcard *.asm)
+
 TOOLSSRC = $(wildcard tools/*.rs)
 TOOLS    = $(patsubst tools/%.rs,build/tools/%,$(TOOLSSRC))
 
@@ -13,7 +15,7 @@ dir:
 	mkdir -p build/tools/
 	mkdir -p build/gfx/
 
-build/$(OUTPUT): main.asm $(TOOLS) $(GFX)
+build/$(OUTPUT): $(SOURCE) $(TOOLS) $(GFX)
 	bass -strict $(INPUT) -o build/$(OUTPUT)
 	build/tools/checksum build/$(OUTPUT)
 

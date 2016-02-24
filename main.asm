@@ -9,6 +9,7 @@ macro seek(variable offset) {
 include "io.asm"
 include "header.asm"
 include "init.asm"
+include "print.asm"
 
 // ensure rom is padded out to 4 MB
 seek($ffffff)
@@ -78,33 +79,8 @@ set_up_video:
                 sta io.BG12NBA
                 stz io.BG34NBA
 
-                lda.b #(32*2 + 2)
-                sta io.VMADDL
-                stz io.VMADDH
-
-                ldx.w #(hello_world & $00ffff)
-            -
-                lda $00,x
-                ora #$40
-                sta io.VMDATAL
-                stz io.VMDATAH
-                inx
-                cpx.w #(hello_world_end & $00ffff)
-                bne -
-
-                lda.b #(32*3 + 2)
-                sta io.VMADDL
-                stz io.VMADDH
-
-                ldx.w #(hello_world & $00ffff)
-            -
-                lda $00,x
-                ora #$80
-                sta io.VMDATAL
-                stz io.VMDATAH
-                inx
-                cpx.w #(hello_world_end & $00ffff)
-                bne -
+                print8x16(2, 2, hello_world)
+                print8x8(2, 5, hello_world)
 
                 lda #%00000001
                 sta io.TM
@@ -150,8 +126,7 @@ map 48, $10, 10
 map 65, $1a, 26
 
 hello_world:
-db "HELLO, WORLD!"
-hello_world_end:
+db "HELLO, WORLD!",$ff
 
 hdma_table:
 db $ff
