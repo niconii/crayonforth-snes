@@ -9,6 +9,7 @@ macro seek(variable offset) {
 include "io.asm"
 include "header.asm"
 include "init.asm"
+include "font_map.asm"
 include "print.asm"
 
 // ensure rom is padded out to 4 MB
@@ -82,6 +83,8 @@ set_up_video:
                 print8x16(2, 2, hello_world)
                 print8x8(2, 5, hello_world)
 
+                print8x8(0, 27, build_string)
+
                 lda #%00000001
                 sta io.TM
 
@@ -111,22 +114,12 @@ set_up_hdma:
 forever:
                 jmp forever
 
-map 32, $00
-map 44, $01
-map 46, $02
-map 59, $03
-map 58, $04
-map 33, $05
-map 63, $06
-map 47, $07
-map 45, $08
-map 91, $09
-map 93, $0a
-map 48, $10, 10
-map 65, $1a, 26
 
 hello_world:
 db "HELLO, WORLD!",$ff
+
+build_string:
+include "build/build.asm"
 
 hdma_table:
 db $ff

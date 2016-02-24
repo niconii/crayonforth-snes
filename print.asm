@@ -1,7 +1,6 @@
 macro print8x8(sx, sy, str) {
-                lda.b #(32*{sy} + {sx})
-                sta io.VMADDL
-                stz io.VMADDH
+                ldx.w #(32*{sy} + {sx})
+                stx io.VMADDL
 
                 ldx.w #({str} & $00ffff)
             -
@@ -16,9 +15,8 @@ macro print8x8(sx, sy, str) {
 }
 
 macro print8x16(sx, sy, str) {
-                lda.b #(32*{sy} + {sx})
-                sta io.VMADDL
-                stz io.VMADDH
+                ldx.w #(32*{sy} + {sx})
+                stx io.VMADDL
 
                 ldx.w #({str} & $00ffff)
             -
@@ -32,9 +30,8 @@ macro print8x16(sx, sy, str) {
                 jmp -
             +
 
-                lda.b #(32*({sy}+1) + {sx})
-                sta io.VMADDL
-                stz io.VMADDH
+                ldx.w #(32*({sy}+1) + {sx})
+                stx io.VMADDL
 
                 ldx.w #({str} & $00ffff)
             -
