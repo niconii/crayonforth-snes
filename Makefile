@@ -11,8 +11,12 @@ GFX      = $(patsubst gfx/%.pcx,build/gfx/%,$(GFXSRC))
 
 all: dir $(TOOLS) $(GFX) build/$(OUTPUT)
 
-dir:
+dir: build/tools build/gfx
+
+build/tools:
 	mkdir -p build/tools/
+
+build/gfx:
 	mkdir -p build/gfx/
 
 build/$(OUTPUT): $(SOURCE) $(TOOLS) $(GFX)
