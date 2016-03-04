@@ -23,8 +23,9 @@ build/build.asm: .FORCE
 	tools/build.sh >$@
 
 build/$(OUTPUT): $(SOURCE) build/build.asm $(TOOLS) $(GFX)
-	bass -strict $(INPUT) -o build/$(OUTPUT)
-	build/tools/checksum build/$(OUTPUT)
+	rm $@
+	bass -strict $(INPUT) -o $@
+	build/tools/checksum $@
 
 $(TOOLS): build/tools/% : tools/%.rs
 	rustc -O $< -o $@
