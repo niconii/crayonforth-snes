@@ -3,6 +3,8 @@ OUTPUT   = program.sfc
 
 SOURCE   = $(wildcard *.asm)
 
+DIRS     = build/tools build/gfx
+
 TOOLSSRC = $(wildcard tools/*.rs)
 TOOLS    = $(patsubst tools/%.rs,build/tools/%,$(TOOLSSRC))
 
@@ -13,17 +15,14 @@ all: dir $(TOOLS) $(GFX) build/$(OUTPUT)
 
 dir: build/tools build/gfx
 
-build/tools:
-	mkdir -p build/tools/
-
-build/gfx:
-	mkdir -p build/gfx/
+$(DIRS):
+	mkdir -p $@
 
 build/build.asm: .FORCE
 	tools/build.sh >$@
 
 build/$(OUTPUT): $(SOURCE) build/build.asm $(TOOLS) $(GFX)
-	rm $@
+	rm -f $@
 	bass -strict $(INPUT) -o $@
 	build/tools/checksum $@
 
