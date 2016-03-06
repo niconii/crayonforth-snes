@@ -30,6 +30,9 @@ reset:
                 init_snes()
 
 set_up_palette:
+                lda #$00
+                sta io.CGADD
+
                 lda.b #%000'00000
                 sta io.CGDATA
                 lda.b #%011111'00
