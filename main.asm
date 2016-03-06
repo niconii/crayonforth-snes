@@ -91,10 +91,6 @@ set_up_video:
                 lda #%00000001
                 sta io.TM
 
-turn_on_screen:
-                lda #$0f
-                sta io.INIDISP
-
 set_up_hdma:
                 lda #%00000011
                 sta io.DMAP0
@@ -113,6 +109,10 @@ set_up_hdma:
 
                 lda #%00000001
                 sta io.HDMAEN
+
+turn_on_screen:
+                lda #$0f
+                sta io.INIDISP
 
 forever:
                 jmp forever
