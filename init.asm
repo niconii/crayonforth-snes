@@ -142,6 +142,4 @@ macro init_snes() {
                 stz $2180
                 dex
                 bne -
-
-                cli
 }
