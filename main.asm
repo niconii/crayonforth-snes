@@ -114,9 +114,114 @@ turn_on_screen:
                 lda #$0f
                 sta io.INIDISP
 
+                lda #%10000001
+                sta io.NMITIMEN
+                cli
+
 forever:
+print "forever offset: "
+print pc()
+print "\n"
+                wai
                 jmp forever
 
+vblank:
+print "vblank offset: "
+print pc()
+print "\n"
+                jsr read_controllers
+
+                rep #$20
+
+                lda Joy1Cur
+                ldx #$0002
+                ldy #$0008
+                jsr print8x8_bin16
+
+                lda Joy1Prs
+                ldx #$0002
+                ldy #$0009
+                jsr print8x8_bin16
+
+                lda Joy1Rls
+                ldx #$0002
+                ldy #$000a
+                jsr print8x8_bin16
+
+                lda $20
+                ldx #$0002
+                ldy #$000c
+                jsr print8x8_bin16
+
+                lda $20
+                inc
+                sta $20
+
+                sep #$20
+
+                rti
+
+macro controller(io, cur, prs, rls) {
+                ldx.w {io}
+                lda.w {cur}
+                stx.w {cur}
+                stx.w {prs}
+                sta.w {rls}
+                trb.w {prs}
+                txa
+                trb.w {rls}
+}
+
+read_controllers:
+                // make sure SNES has read from controllers
+                lda #%00000001
+            -
+                bit io.HVBJOY
+                beq -
+            -
+                bit io.HVBJOY
+                bne -
+
+                rep #$20
+                controller(io.JOY1L, Joy1Cur, Joy1Prs, Joy1Rls)
+                sep #$20
+
+                rts
+
+print8x8_bin16:
+                pha
+                tya
+                asl
+                asl
+                asl
+                asl
+                asl
+                stx.w $0000
+                clc
+                adc.w $0000
+                sta.w io.VMADDL
+
+                ldy #$0010
+                pla
+            -
+                bmi +
+                ldx #$0010
+                jmp ++
+            +
+                ldx #$0011
+            +
+                stx io.VMDATAL
+                dey
+                beq +
+                asl
+                jmp -
+
+            +
+                rts
+
+constant Joy1Cur($0010)
+constant Joy1Prs($0012)
+constant Joy1Rls($0014)
 
 hello_world:
 db "HELLO, WORLD!",$ff

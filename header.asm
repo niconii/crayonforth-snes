@@ -26,17 +26,17 @@ db $00 // no custom co-processor
 seek($00ffe0)
 dw empty_handler
 dw empty_handler
+dw empty_handler // 65816 COP
+dw empty_handler // 65816 BRK
+dw empty_handler
+dw vblank        // 65816 NMI (VBlank)
+dw empty_handler
+dw empty_handler // 65816 IRQ (H/V timer)
 dw empty_handler
 dw empty_handler
+dw empty_handler // 6502 COP
 dw empty_handler
 dw empty_handler
-dw empty_handler
-dw empty_handler
-dw empty_handler
-dw empty_handler
-dw empty_handler
-dw empty_handler
-dw empty_handler
-dw empty_handler
-dw reset
-dw empty_handler
+dw empty_handler // 6502 NMI
+dw reset         // 6502 RESET
+dw empty_handler // 6502 IRQ/BRK
