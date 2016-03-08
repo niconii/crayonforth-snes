@@ -1,3 +1,5 @@
+include "fontmap_ascii.asm"
+
 // ROM HEADER
 seek($00ffc0)
   //123456789012345678901
