@@ -18,10 +18,8 @@ dir: build/tools build/gfx
 $(DIRS):
 	mkdir -p $@
 
-build/build.asm: .FORCE
-	tools/build.sh >$@
-
-build/$(OUTPUT): $(SOURCE) build/build.asm $(TOOLS) $(GFX)
+build/$(OUTPUT): $(SOURCE) $(TOOLS) $(GFX)
+	tools/build.sh >build/build.asm
 	rm -f $@
 	bass -strict $(INPUT) -o $@
 	build/tools/checksum $@
@@ -35,5 +33,3 @@ $(GFX): build/gfx/% : gfx/%.pcx
 
 clean:
 	rm -r build/
-
-.FORCE:
