@@ -1,3 +1,8 @@
+macro seek(variable offset) {
+    origin ((offset & $7f0000) >> 1) | (offset & $007fff)
+    base offset
+}
+
 macro print8x8(sx, sy, str) {
                 ldx.w #(32*{sy} + {sx})
                 stx io.VMADDL

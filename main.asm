@@ -1,17 +1,12 @@
 arch snes.cpu
 
-macro seek(variable offset) {
-    origin ((offset & $7f0000) >> 1) | (offset & $007fff)
-    base offset
-}
+include "macros.asm"
+include "consts.asm"
+include "init.asm"
 
 // ensure rom is padded out to 4 MB
 seek($ffffff)
 db 0
-
-include "init.asm"
-include "io.asm"
-include "print.asm"
 
 // bank 0
 seek($008000)

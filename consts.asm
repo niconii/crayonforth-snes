@@ -1,3 +1,8 @@
+constant Joy1Cur($10)
+constant Joy1Prs($12)
+constant Joy1Rls($14)
+constant FrameCt($20)
+
 // ppu write-only ports
 constant io.INIDISP($2100)
 constant io.OBSEL($2101)

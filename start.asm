@@ -120,14 +120,14 @@ vblank:
                 ldy #$000a
                 jsr print8x8_bin16
 
-                lda $20
+                lda FrameCt
                 ldx #$0002
                 ldy #$000c
                 jsr print8x8_bin16
 
-                lda $20
+                lda FrameCt
                 inc
-                sta $20
+                sta FrameCt
 
                 sep #$20
 
@@ -190,10 +190,6 @@ print8x8_bin16:
 
             +
                 rts
-
-constant Joy1Cur($0010)
-constant Joy1Prs($0012)
-constant Joy1Rls($0014)
 
 hello_world:
 db "HELLO, WORLD!",$ff
