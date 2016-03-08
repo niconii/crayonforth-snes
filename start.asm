@@ -97,16 +97,10 @@ turn_on_screen:
                 cli
 
 forever:
-print "forever offset: "
-print pc()
-print "\n"
                 wai
                 jmp forever
 
 vblank:
-print "vblank offset: "
-print pc()
-print "\n"
                 jsr read_controllers
 
                 rep #$20
