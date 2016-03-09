@@ -1,4 +1,4 @@
-include "fontmap_6bit.asm"
+include "fontmap_6bit.inc"
 
 empty_handler:
                 rti

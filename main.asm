@@ -1,8 +1,8 @@
 arch snes.cpu
 
-include "macros.asm"
-include "consts.asm"
-include "init.asm"
+include "macros.inc"
+include "consts.inc"
+include "init.inc"
 
 // ensure rom is padded out to 4 MB
 seek($ffffff)

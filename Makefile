@@ -1,7 +1,7 @@
 INPUT    = main.asm
 OUTPUT   = program.sfc
 
-SOURCE   = $(wildcard *.asm)
+SOURCE   = $(wildcard *.asm) $(wildcard *.inc)
 
 DIRS     = build/tools build/gfx
 
