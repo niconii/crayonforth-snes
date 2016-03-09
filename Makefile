@@ -11,9 +11,7 @@ TOOLS    = $(patsubst tools/%.rs,build/tools/%,$(TOOLSSRC))
 GFXSRC   = $(wildcard gfx/*.pcx)
 GFX      = $(patsubst gfx/%.pcx,build/gfx/%,$(GFXSRC))
 
-all: dir $(TOOLS) $(GFX) build/$(OUTPUT)
-
-dir: build/tools build/gfx
+all: $(DIRS) $(TOOLS) $(GFX) build/$(OUTPUT)
 
 $(DIRS):
 	mkdir -p $@
