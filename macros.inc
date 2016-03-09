@@ -1,6 +1,13 @@
-macro seek(variable offset) {
-    origin ((offset & $7f0000) >> 1) | (offset & $007fff)
-    base offset
+macro seek(offset) {
+    origin (({offset} & $7f0000) >> 1) | ({offset} & $007fff)
+    base {offset}
+}
+
+macro seekf(offset) {
+    if pc() >= {offset} {
+        error "Memory overlap at {offset}"
+    }
+    seek({offset})
 }
 
 macro print8x8(sx, sy, str) {
