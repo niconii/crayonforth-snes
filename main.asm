@@ -8,12 +8,12 @@ pad_to($ffffff)
 
 start()
 
-bank(0)
+bank($00)
 include "start.asm"
 seekf($00ffb0)
 include "header.asm"
 
-bank(1)
+bank($01)
 insert font, "build/gfx/font.2bpp"
 
 end()
