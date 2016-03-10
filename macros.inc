@@ -21,7 +21,11 @@ macro check_free(variable offset) {
         print_hex6(pc())
         print "..."
         print_hex6(offset - 1)
-        print " free\n"
+        print " free ("
+        print_percentage(offset - pc(), $008000)
+        print " of bank "
+        print_hex2((pc() & $ff0000) >> 16)
+        print ")\n"
     } else if pc() > offset {
         print "Overlap at "
         print_hex6(offset)
@@ -40,6 +44,20 @@ macro bank(variable n) {
     seek((n << 16) | $008000)
 }
 
+macro print_hex1(variable n) {
+    if n >= 10 {
+        putchar(97 - 10 + n)
+    } else {
+        putchar(48 + n)
+    }
+}
+
+macro print_hex2(variable n) {
+    print "$"
+    print_hex1((n & $f0) >> 4)
+    print_hex1((n & $0f) >> 0)
+}
+
 macro print_hex6(variable n) {
     print "$"
     print_hex1((n & $f00000) >> 20)
@@ -50,12 +68,16 @@ macro print_hex6(variable n) {
     print_hex1((n & $00000f) >>  0)
 }
 
-macro print_hex1(variable n) {
-    if n >= 10 {
-        putchar(97 - 10 + n)
-    } else {
-        putchar(48 + n)
-    }
+macro scope print_percentage(variable n, variable d) {
+    variable result(100000*n / d)
+    variable integer(result / 1000)
+    variable fraction(result % 1000)
+    print integer
+    print "."
+    print fraction / 100 % 10
+    print fraction / 10 % 10
+    print fraction % 10
+    print "%"
 }
 
 macro print8x8(sx, sy, str) {
