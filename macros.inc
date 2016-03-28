@@ -8,8 +8,8 @@ macro pad_to(variable offset) {
     db 0
 }
 
-macro start() {
-    seek($000000)
+macro start(variable bank) {
+    seek(bank << 16)
 }
 
 macro end() {

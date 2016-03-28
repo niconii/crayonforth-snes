@@ -2,18 +2,19 @@ arch snes.cpu
 
 include "macros.inc"
 include "consts.inc"
-include "init.inc"
 
 pad_to($ffffff)
 
-start()
+start($80)
 
-bank($00)
+bank($80)
+include "init.asm"
 include "start.asm"
-seekf($00ffb0)
+
+seekf($80ffb0)
 include "header.asm"
 
-bank($01)
+bank($81)
 insert font, "build/gfx/font.2bpp"
 
 end()
