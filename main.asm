@@ -1,20 +1,10 @@
-arch snes.cpu
+.p816
+.include "header.asm"
 
-include "macros.inc"
-include "consts.inc"
+.segment "ROM0"
+    .include "init.asm"
+    .include "start.asm"
 
-pad_to($ffffff)
-
-start($80)
-
-bank($80)
-include "init.asm"
-include "start.asm"
-
-seekf($80ffb0)
-include "header.asm"
-
-bank($81)
-insert font, "build/gfx/font.2bpp"
-
-end()
+.segment "ROM1"
+font:
+    .incbin "build/gfx/font.2bpp"

@@ -1,5 +1,5 @@
 start:
-    stp
+    jmp start
 
 empty_handler:
     rti

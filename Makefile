@@ -19,7 +19,8 @@ $(DIRS):
 build/$(OUTPUT): $(SOURCE) $(TOOLS) $(GFX)
 	tools/build.sh >build/build.asm
 	rm -f $@
-	bass -strict $(INPUT) -o $@
+	ca65 main.asm -o build/main.o
+	ld65 -C lorom.ld build/main.o -o $@
 	build/tools/checksum $@
 
 $(TOOLS): build/tools/% : tools/%.rs
