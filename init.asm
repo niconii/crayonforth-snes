@@ -1,3 +1,103 @@
+; SNES initialization code
+
+; State of SNES after completion:
+
+; 65816 registers
+; ----------------------
+; PB = $80, DB = $00
+; P = %00000100
+; A = $0000
+; X = $0000
+; Y = $0000
+; D = $0000
+; S = $01ff
+
+; Memory
+; ----------------------
+; OAM   cleared with $00
+; VRAM  cleared with $00
+; CGRAM cleared with $00
+; WRAM  cleared with $00
+
+; PPU R/W registers
+; ----------------------
+; $2100 INIDISP = $8f
+; $2101 OBSEL   = $00
+; $2102 OAMADDL = $00
+; $2103 OAMADDH = $00
+; $2104 OAMDATA = $00
+; $2105 BGMODE  = $00
+; $2106 MOSAIC  = $00
+; $2107 BG1SC   = $00
+; $2108 BG2SC   = $00
+; $2109 BG3SC   = $00
+; $210a BG4SC   = $00
+; $210b BG12NBA = $00
+; $210c BG34NBA = $00
+; $210d BG1HOFS = $0000
+; $210e BG1VOFS = $0000
+; $210f BG2HOFS = $0000
+; $2110 BG2VOFS = $0000
+; $2111 BG3HOFS = $0000
+; $2112 BG3VOFS = $0000
+; $2113 BG4HOFS = $0000
+; $2114 BG4VOFS = $0000
+; $2115 VMAIN   = $80
+; $2116 VMADDL  = $00
+; $2117 VMADDH  = $00
+; $2118 VMDATAL = $00
+; $2119 VMDATAH = $00
+; $211a M7SEL   = $00
+; $211b M7A     = $0100
+; $211c M7B     = $0000
+; $211d M7C     = $0000
+; $211e M7D     = $0100
+; $211f M7X     = $0000
+; $2120 M7Y     = $0000
+; $2121 CGADD   = $00
+; $2122 CGDATA  = $0000
+; $2123 W12SEL  = $00
+; $2124 W34SEL  = $00
+; $2125 WOBJSEL = $00
+; $2126 WH0     = $00
+; $2127 WH1     = $00
+; $2128 WH2     = $00
+; $2129 WH3     = $00
+; $212a WBGLOG  = $00
+; $212b WOBJLOG = $00
+; $212c TM      = $00
+; $212d TS      = $00
+; $212e TMW     = $00
+; $212f TSW     = $00
+; $2130 CGWSEL  = $30
+; $2131 CGADSUB = $00
+; $2132 COLDATA = $e0
+; $2133 SETINI  = $00
+
+; WRAM registers
+; ----------------------
+; $2180 WMDATA  = $00
+; $2181 WMADDL  = $00
+; $2182 WMADDM  = $00
+; $2183 WMADDH  = $00
+
+; CPU on-chip registers
+; ----------------------
+; $4200 NMITIMEN= $00
+; $4201 WRIO    = $ff
+; $4202 WRMPYA  = $00
+; $4203 WRMPYB  = $00
+; $4204 WRDIVL  = $00
+; $4205 WRDIVH  = $00
+; $4206 WRDIVB  = $00
+; $4207 HTIMEL  = $00
+; $4208 HTIMEH  = $00
+; $4209 VTIMEL  = $00
+; $420a VTIMEH  = $00
+; $420b MDMAEN  = $00
+; $420c HDMAEN  = $00
+; $420d MEMSEL  = $01
+
 reset:
     ; Disable interrupts
     sei
@@ -6,8 +106,8 @@ reset:
     clc
     xce
 
-    ; Jump to bank mirror in $80-$ff, which will be
-    ; faster after setting MEMSEL
+    ; Jump to bank mirror in $80 (LoROM) or $c0 (HiROM), which
+    ; will be faster after setting MEMSEL to 3.58 MHz
     jml reset_fast
 
 
@@ -66,7 +166,7 @@ reset_fast:
     lda #$00
     tad
 
-    ; INIDISP: forced blanking, normal brightness
+    ; INIDISP: forced blank on, brightness = 15/15 (normal)
     lda #$8f
     sta $00
 
@@ -76,8 +176,8 @@ reset_fast:
 
     ; BGMODE: all tiles 8x8, BG3 priority normal, mode 0
     ; MOSAIC: 1x1 size, mosaic off
-    ; BG1SC, BG2SC, BG3SC, BG4SC: base address $0, 32x32
-    ; BG12NBA, BG34NBA: tile base address $0
+    ; BG1SC, BG2SC, BG3SC, BG4SC: map base VRAM address $0, 32x32
+    ; BG12NBA, BG34NBA: tile base VRAM address $0
     ldx #$05
 :
     stz $00,x
@@ -126,8 +226,10 @@ reset_fast:
 
 
     ; W12SEL, W34SEL, WOBJSEL: disable windows
-    ; WBGLOG, WOBJLOG: OR windows
-    ; TMW, TSW: don't disable layers
+    ; WH0, WH1, WH2, WH3: 0
+    ; WBGLOG, WOBJLOG: OR window areas together
+    ; TM, TS: disable all layers
+    ; TMW, TSW: don't have windows disable layers
     ldx #$23
 :
     stz $00,x
@@ -137,7 +239,7 @@ reset_fast:
 
 
     ; CGWSEL: don't force main screen black, disable color math,
-    ;         no subscreen BG/OBJ color math, use palettes
+    ;         no subscreen BG/OBJ color math, no direct color
     lda #$30
     sta $30
 
@@ -190,7 +292,7 @@ clear_memory:
 
 
     ; OBSEL: obj size small 8x8, large 16x16,
-    ;        no gap between $0ff and $100, base address $0
+    ;        no gap between OAM $0ff and $100, base VRAM address $0
     stz $01
 
     ; Initialize OAM
