@@ -336,3 +336,5 @@ clear_memory:
     ; Reset all bits except interrupt disable
     ; A/memory = 16 bits, X/Y = 16 bits
     rep #%11111011
+
+    jmp start
