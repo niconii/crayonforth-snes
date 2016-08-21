@@ -1,4 +1,5 @@
 .p816
+.smart +
 .include "header.asm"
 
 .segment "ROM0"

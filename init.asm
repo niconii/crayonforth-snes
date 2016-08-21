@@ -112,8 +112,6 @@ reset:
 
 
 reset_fast:
-.smart +
-
     ; Reset all bits except interrupt disable
     ; A/memory = 16 bits, X/Y = 16 bits
     rep #%11111011
@@ -153,10 +151,10 @@ reset_fast:
     ; MDMAEN: disable all DMA channels
     ; HDMAEN: disable all HDMA channels
     ldx #$02
-:
-    stz $00,x
-    inx
-    cpx #($0c + 1)
+    :
+        stz $00,x
+        inx
+        cpx #($0c + 1)
     bmi :-
 
 
@@ -179,20 +177,20 @@ reset_fast:
     ; BG1SC, BG2SC, BG3SC, BG4SC: map base VRAM address $0, 32x32
     ; BG12NBA, BG34NBA: tile base VRAM address $0
     ldx #$05
-:
-    stz $00,x
-    inx
-    cpx #($0c + 1)
+    :
+        stz $00,x
+        inx
+        cpx #($0c + 1)
     bmi :-
 
     ; BG1HOFS, BG1VOFS, BG2HOFS, BG2VOFS,
     ; BG3HOFS, BG3VOFS, BG4HOFS, BG4VOFS: no scroll
     ldx #$0d
-:
-    stz $00,x
-    stz $00,x
-    inx
-    cpx #($14 + 1)
+    :
+        stz $00,x
+        stz $00,x
+        inx
+        cpx #($14 + 1)
     bmi :-
 
 
@@ -231,10 +229,10 @@ reset_fast:
     ; TM, TS: disable all layers
     ; TMW, TSW: don't have windows disable layers
     ldx #$23
-:
-    stz $00,x
-    inx
-    cpx #($2f + 1)
+    :
+        stz $00,x
+        inx
+        cpx #($2f + 1)
     bmi :-
 
 
@@ -264,9 +262,9 @@ clear_memory:
     stz $16
 
     lda #$8000
-:
-    stz $18
-    dec
+    :
+        stz $18
+        dec a
     bne :-
 
     stz $16
@@ -280,10 +278,10 @@ clear_memory:
     stz $21
 
     lda #$00
-:
-    stz $22
-    stz $22
-    dec
+    :
+        stz $22
+        stz $22
+        dec a
     bne :-
 
 
@@ -300,9 +298,9 @@ clear_memory:
     stz $03
 
     ldx #$0220
-:
-    stz $04
-    dex
+    :
+        stz $04
+        dex
     bne :-
 
     stx $02
@@ -314,13 +312,13 @@ clear_memory:
     stz $83
 
     ldx #$0000
-:
-    stz $80
-    dex
+    :
+        stz $80
+        dex
     bne :-
-:
-    stz $80
-    dex
+    :
+        stz $80
+        dex
     bne :-
 
 
@@ -338,5 +336,3 @@ clear_memory:
     ; Reset all bits except interrupt disable
     ; A/memory = 16 bits, X/Y = 16 bits
     rep #%11111011
-
-.smart -
