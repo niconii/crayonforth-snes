@@ -14,8 +14,8 @@ MEMORY {
 }
 
 SEGMENTS {
-    ROM0:       load = ROM0, type = ro;
-
+    FONT:       load = ROM0, type = ro, start = $808000;
+    CODE:       load = ROM0, type = ro, start = $809000;
     EXTINFO:    load = ROM0, type = ro, start = $80ffb0;
     HEADER:     load = ROM0, type = ro, start = $80ffc0, fillval = $20;
     ROMINFO:    load = ROM0, type = ro, start = $80ffd5;
