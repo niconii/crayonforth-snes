@@ -23,7 +23,7 @@
     dpush CursorX
     and #$00ff
     dpop y
-    cpy #(2*32)
+    cpy #LINELEN
     bcs :+
         dpop {LineBuffer,y}
         bra end

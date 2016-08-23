@@ -11,12 +11,14 @@ TOOLS    = $(patsubst tools/%.rs,build/tools/%,$(TOOLSSRC))
 GFXSRC   = $(wildcard gfx/*.pcx)
 GFX      = $(patsubst gfx/%.pcx,build/gfx/%,$(GFXSRC))
 
-all: $(DIRS) $(TOOLS) build/gfx/font0+font1.2bpp build/$(OUTPUT)
+FONTS    = build/gfx/font0+font1.evens.2bpp build/gfx/font0+font1.odds.2bpp
+
+all: $(DIRS) $(TOOLS) $(FONTS) build/$(OUTPUT)
 
 $(DIRS):
 	mkdir -p $@
 
-build/$(OUTPUT): $(SOURCE) $(TOOLS) build/gfx/font0+font1.2bpp
+build/$(OUTPUT): $(SOURCE) $(TOOLS) $(FONTS)
 	tools/build.sh >build/build.asm
 	ca65 main.asm -o build/main.o --listing build/program.lst
 	ld65 -C lorom.ld build/main.o -o $@
@@ -25,8 +27,8 @@ build/$(OUTPUT): $(SOURCE) $(TOOLS) build/gfx/font0+font1.2bpp
 $(TOOLS): build/tools/% : tools/%.rs
 	rustc -O $< -o $@
 
-build/gfx/font0+font1.2bpp:
-	build/tools/pcx2snes --1+1bpp gfx/font0.1bpp.pcx gfx/font1.1bpp.pcx $@
+$(FONTS):
+	build/tools/pcx2snes --64x32font gfx/font0.1bpp.pcx gfx/font1.1bpp.pcx build/gfx/font0+font1.evens.2bpp build/gfx/font0+font1.odds.2bpp
 
 clean:
 	rm -r build/

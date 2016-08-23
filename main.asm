@@ -7,8 +7,10 @@
 .include "ram.asm"
 
 .segment "FONT"
-font:
-    .incbin "build/gfx/font0+font1.2bpp"
+fonte:
+    .incbin "build/gfx/font0+font1.evens.2bpp"
+fonto:
+    .incbin "build/gfx/font0+font1.odds.2bpp"
 
 .segment "CODE"
     .include "init.asm"
@@ -26,28 +28,70 @@ zerobyte: .byte $00
         font0 BGCOLOR, FTCOLOR1
         font1 BGCOLOR, FTCOLOR0
         font1 BGCOLOR, FTCOLOR1
+        lda #$20
+        sta CGADD
+        font0 BGCOLOR, FTCOLOR0
+        font0 BGCOLOR, FTCOLOR1
+        font1 BGCOLOR, FTCOLOR0
+        font1 BGCOLOR, FTCOLOR1
+        lda #$40
+        sta CGADD
+        font0 BGCOLOR, FTCOLOR0
+        font0 BGCOLOR, FTCOLOR1
+        font1 BGCOLOR, FTCOLOR0
+        font1 BGCOLOR, FTCOLOR1
+        lda #$60
+        sta CGADD
+        font0 BGCOLOR, FTCOLOR0
+        font0 BGCOLOR, FTCOLOR1
+        font1 BGCOLOR, FTCOLOR0
+        font1 BGCOLOR, FTCOLOR1
 
-        ; Set up font
+        ; DMA font even pixels
         stz VMADDL
         stz VMADDH
         lda #%00000001      ; a->b astep=+1 unit=[0,1]
         sta DMAP7
         lda #<VMDATAL       ; b=VMDATAL
         sta BBAD7
-        ldy #.loword(font)  ; a=font
+        ldy #.loword(fonte) ; a=fonte
         sty A1T7L
-        lda #^font
+        lda #^fonte
         sta A1B7
-        ldy #(8*8*256*2/8)  ; len=8*8*256*2/8
+        ldy #FONTLEN        ; len=FONTLEN
         sty DAS7L
         lda #%10000000      ; initiate DMA
         sta MDMAEN
+        
+        ldy #$1000
+        sty VMADDL
+        ldy #.loword(fonto) ; a=fonto
+        sty A1T7L
+        ldy #FONTLEN
+        sty DAS7L
+        lda #%10000000
+        sta MDMAEN
 
-        ; Set up BG1
+        ; Set up BGs
         lda #%00001000      ; attribute table at $0800, 32x32 screen
         sta BG1SC
-        lda #%00000001      ; enable BG1 on main screen
+        lda #%00001000      ; attribute table at $0800, 32x32 screen
+        sta BG2SC
+        lda #%00001100      ; attribute table at $0c00, 32x32 screen
+        sta BG3SC
+        lda #%00001100      ; attribute table at $0c00, 32x32 screen
+        sta BG4SC
+        lda #%00010000      ; BG1 font at $0000, BG2 font at $1000
+        sta BG12NBA
+        lda #%00010000      ; BG3 font at $0000, BG4 font at $1000
+        sta BG34NBA
+        lda #%00000101      ; enable BG1 + BG3 on subscreen
+        sta TS
+        lda #%00001010      ; enable BG2 + BG4 on main screen
         sta TM
+
+        lda #%00001000      ; enable pseudo-hires
+        sta SETINI
 
         ; Enable interrupts
         cli

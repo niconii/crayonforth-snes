@@ -51,11 +51,11 @@ linedone:
 ;    sty A1T7L
 ;    lda #^zerobyte
 ;    sta A1B7
-;    ldy #(2*32)         ; len=2*32
+;    ldy #LINELEN        ; len=LINELEN
 ;    sty DAS7L
 ;    lda %10000000       ; initiate DMA
 ;    sta MDMAEN
-     ldx #(2*32)
+     ldx #LINELEN
      :
         dex
         stz LineBuffer,x
@@ -97,16 +97,34 @@ end:
     rti
 .endproc
 
+.a8
 .proc refresh_screen
     lda OffsetH
     sta BG1HOFS
     stz BG1HOFS
+    sta BG2HOFS
+    stz BG2HOFS
+    sec
+    sbc #4
+    sta BG3HOFS
+    stz BG3HOFS
+    sta BG4HOFS
+    stz BG4HOFS
+
     lda OffsetV
     dec a
     sta BG1VOFS
     stz BG1VOFS
+    sta BG2VOFS
+    stz BG2VOFS
+    sta BG3VOFS
+    stz BG3VOFS
+    sta BG4VOFS
+    stz BG4VOFS
 
-    ; DMA line buffer
+    ; Write line buffer to VRAM
+    stz VMAIN
+    
     rep #$20
         lda CursorY
         and #$00ff
@@ -115,21 +133,38 @@ end:
         asl a
         asl a
         asl a
+        pha
         ora #$0800
         sta VMADDL
     sep #$20
 
-    lda #%00000001      ; a->b astep=+1 unit=[0,1]
-    sta DMAP7
-    lda #<VMDATAL       ; b=VMDATAL
-    sta BBAD7
-    ldy #LineBuffer     ; a=LineBuffer
-    sty A1T7L
-    stz A1B7
-    ldy #(2*32)         ; len=2*32
-    sty DAS7L
-    lda #%10000000      ; initiate DMA
-    sta MDMAEN
+    ldx #0
+    :
+        ldy LineBuffer,x
+        sty VMDATAL
+        inx
+        inx
+        inx
+        inx
+    cpx #LINELEN
+    bne :-
+    
+    rep #$20
+        pla
+        ora #$0c00
+        sta VMADDL
+    sep #$20
+    
+    ldx #0
+    :
+        ldy LineBuffer+2,x
+        sty VMDATAL
+        inx
+        inx
+        inx
+        inx
+    cpx #LINELEN
+    bne :-
     
     rts
 .endproc

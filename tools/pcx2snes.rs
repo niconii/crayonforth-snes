@@ -27,6 +27,18 @@ fn main() {
 
             a_img.to_2bpp(Path::new(&out));
         },
+        "--64x32font" => {
+            let a = args.next().expect("First input not given");
+            let b = args.next().expect("Second input not given");
+            let outa = args.next().expect("First output not given");
+            let outb = args.next().expect("Second output not given");
+            
+            let mut a_img = Image::from_file(Path::new(&a));
+            let b_img = Image::from_file(Path::new(&b));
+            a_img.superimpose(&b_img, 1);
+            
+            a_img.to_font(Path::new(&outa), Path::new(&outb));
+        },
         _ => panic!("No format given")
     }
 }
@@ -107,6 +119,56 @@ impl Image {
         }
 
         let mut out = File::create(filename).expect("Failed to create output file");
+
+        out.write_all(&output).expect("Failed to write output");
+    }
+    
+    fn to_font(&self, evens_filename: &Path, odds_filename: &Path) {
+        let mut output = vec![];
+
+        for y in 0..(self.height/8) {
+            for x in 0..(self.width/8) {
+                for ty in 0..8 {
+                    let mut row0 = 0u8;
+                    let mut row1 = 0u8;
+
+                    for tx in 0..4 {
+                        let pixel = self.data[(y*8 + ty)*self.width + x*8 + tx*2];
+                        row0 |= (pixel & 1) << (7-tx);
+                        row1 |= ((pixel & 2) >> 1) << (7-tx);
+                    }
+
+                    output.push(row0);
+                    output.push(row1);
+                }
+            }
+        }
+        
+        let mut out = File::create(evens_filename).expect("Failed to create output file");
+
+        out.write_all(&output).expect("Failed to write output");
+
+        let mut output = vec![];
+        
+        for y in 0..(self.height/8) {
+            for x in 0..(self.width/8) {
+                for ty in 0..8 {
+                    let mut row0 = 0u8;
+                    let mut row1 = 0u8;
+
+                    for tx in 0..4 {
+                        let pixel = self.data[(y*8 + ty)*self.width + x*8 + tx*2 + 1];
+                        row0 |= (pixel & 1) << (7-tx);
+                        row1 |= ((pixel & 2) >> 1) << (7-tx);
+                    }
+
+                    output.push(row0);
+                    output.push(row1);
+                }
+            }
+        }
+
+        let mut out = File::create(odds_filename).expect("Failed to create output file");
 
         out.write_all(&output).expect("Failed to write output");
     }
