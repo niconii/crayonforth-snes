@@ -20,6 +20,11 @@
 ; emit ( ch -- )
 ; Emit a character to the screen
 .proc emit
+    sep #$20
+        xba
+        lda TextColor
+        xba
+    rep #$20
     dpush CursorX
     and #$00ff
     dpop y

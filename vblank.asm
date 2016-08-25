@@ -6,17 +6,42 @@
     phx
     phy
 
-
     ; Check flags
     sep #$20
-    lda Flags
-    bit #$40
-    bmi linedone
-    bne refreshscr  ; TODO: bvs didn't work and I don't know why
+        lda Flags
+        bit #$40
+    rep #$20
+    bmi flinedone
+    bne frefresh    ; TODO: bvs didn't work and I don't know why
     jmp end
 
-linedone:
-    jsr refresh_screen
+flinedone:
+    jsr _cr
+
+frefresh:
+    jsr _refresh
+
+end:
+    sep #$20
+        stz Flags
+    rep #$20
+
+    jsr _joy
+
+    ply
+    plx
+    pla
+    pld
+    plb
+    rti
+.endproc
+
+; _cr ( -- ) blanking only
+.proc _cr
+    pha
+    phx
+    jsr _refresh
+    sep #$20
 
     stz CursorX
     lda CursorY
@@ -55,50 +80,23 @@ linedone:
 ;    sty DAS7L
 ;    lda %10000000       ; initiate DMA
 ;    sta MDMAEN
-     ldx #LINELEN
-     :
+    ldx #LINELEN
+    :
         dex
         stz LineBuffer,x
-     bne :-
-
-.a8
-refreshscr:
-    jsr refresh_screen
-
-end:
-    stz Flags
-    rep #$20
-
-    ; Read controllers
-    lda #%00000001
-:   bit HVBJOY
     bne :-
-
-    ldy JOY1L
-    tya
-    eor Joy1Cur
-    sty Joy1Cur
-    and Joy1Cur
-    sta Joy1Prs
-
-    ldy JOY2L
-    tya
-    eor Joy2Cur
-    sty Joy2Cur
-    and Joy2Cur
-    sta Joy2Prs
-
-
-    ply
+    
+    rep #$20
     plx
     pla
-    pld
-    plb
-    rti
 .endproc
 
-.a8
-.proc refresh_screen
+; _refresh ( -- ) blanking only
+.proc _refresh
+    pha
+    phx
+    sep #$20
+
     lda OffsetH
     sta BG1HOFS
     stz BG1HOFS
@@ -124,7 +122,7 @@ end:
 
     ; Write line buffer to VRAM
     stz VMAIN
-    
+
     rep #$20
         lda CursorY
         and #$00ff
@@ -148,13 +146,13 @@ end:
         inx
     cpx #LINELEN
     bne :-
-    
+
     rep #$20
         pla
         ora #$0c00
         sta VMADDL
     sep #$20
-    
+
     ldx #0
     :
         ldy LineBuffer+2,x
@@ -166,6 +164,130 @@ end:
     cpx #LINELEN
     bne :-
     
+    rep #$20
+    plx
+    pla
     rts
 .endproc
-.a16
+
+; _joy ( -- ) blanking only
+.proc _joy
+    pha
+    phx
+
+    sep #$20
+        lda #%00000001
+        :
+            bit HVBJOY
+        bne :-
+    rep #$20
+
+    ldy JOY1L
+    tya
+    eor Joy1Cur
+    sty Joy1Cur
+    and Joy1Cur
+    sta Joy1Prs
+
+    ldy JOY2L
+    tya
+    eor Joy2Cur
+    sty Joy2Cur
+    and Joy2Cur
+    sta Joy2Prs
+
+    plx
+    pla
+    rts
+.endproc
+
+; _color ( c -- ) blanking only
+.proc _color
+    sep #$20
+        sta CGDATA
+        xba
+        sta CGDATA
+    rep #$20
+    dpop
+    rts
+.endproc
+
+; _font0s ( bg fg a -- bg fg a ) blanking only
+.proc _font0s
+    sep #$20
+        sta CGADD
+    rep #$20
+    dpush {$04,x}
+    jsr _color
+    dpush {$02,x}
+    jsr _color
+    dpush {$04,x}
+    jsr _color
+    dpush {$02,x}
+    jsr _color
+    rts
+.endproc
+
+; _font0 ( bg fg n -- ) blanking only
+.proc _font0
+    asl a
+    asl a
+    jsr _font0s
+    clc
+    adc #$20
+    jsr _font0s
+    clc
+    adc #$20
+    jsr _font0s
+    clc
+    adc #$20
+    jsr _font0s
+
+    ldy $04,x
+    txa
+    clc
+    adc #6
+    tax
+    tya
+    rts
+.endproc
+
+; _font1s ( bg fg a -- bg fg a ) blanking only
+.proc _font1s
+    sep #$20
+        sta CGADD
+    rep #$20
+    dpush {$04,x}
+    jsr _color
+    dpush {$04,x}
+    jsr _color
+    dpush {$02,x}
+    jsr _color
+    dpush {$02,x}
+    jsr _color
+    rts
+.endproc
+
+; _font1 ( bg fg n -- ) blanking only
+.proc _font1
+    asl
+    asl
+    jsr _font1s
+    clc
+    adc #$20
+    jsr _font1s
+    clc
+    adc #$20
+    jsr _font1s
+    clc
+    adc #$20
+    jsr _font1s
+
+    ldy $04,x
+    txa
+    clc
+    adc #6
+    tax
+    tya
+    rts
+.endproc

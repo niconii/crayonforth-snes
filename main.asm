@@ -21,32 +21,31 @@ empty_handler: rti
 zerobyte: .byte $00
 
 .proc start
-    sep #$20
-        ; Set up palette
-        stz CGADD
-        font0 BGCOLOR, FTCOLOR0
-        font0 BGCOLOR, FTCOLOR1
-        font1 BGCOLOR, FTCOLOR0
-        font1 BGCOLOR, FTCOLOR1
-        lda #$20
-        sta CGADD
-        font0 BGCOLOR, FTCOLOR0
-        font0 BGCOLOR, FTCOLOR1
-        font1 BGCOLOR, FTCOLOR0
-        font1 BGCOLOR, FTCOLOR1
-        lda #$40
-        sta CGADD
-        font0 BGCOLOR, FTCOLOR0
-        font0 BGCOLOR, FTCOLOR1
-        font1 BGCOLOR, FTCOLOR0
-        font1 BGCOLOR, FTCOLOR1
-        lda #$60
-        sta CGADD
-        font0 BGCOLOR, FTCOLOR0
-        font0 BGCOLOR, FTCOLOR1
-        font1 BGCOLOR, FTCOLOR0
-        font1 BGCOLOR, FTCOLOR1
+    ; Set up data stack
+    ldx #$0180
 
+    ; Set up palette
+    dpush #BGCOLOR
+    dpush #FTCOLOR0
+    dpush #0
+    jsr _font0
+
+    dpush #BGCOLOR
+    dpush #FTCOLOR1
+    dpush #1
+    jsr _font0
+
+    dpush #BGCOLOR
+    dpush #FTCOLOR0
+    dpush #2
+    jsr _font1
+
+    dpush #BGCOLOR
+    dpush #FTCOLOR1
+    dpush #3
+    jsr _font1
+
+    sep #$20
         ; DMA font even pixels
         stz VMADDL
         stz VMADDH
@@ -108,9 +107,6 @@ zerobyte: .byte $00
         lda #$0f
         sta INIDISP
     rep #$20
-
-    ; Set up data stack
-    ldx #$0180
 
 main_loop:
     lda Joy1Prs

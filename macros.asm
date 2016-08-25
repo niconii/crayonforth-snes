@@ -28,24 +28,3 @@
     inx
     inx
 .endmacro
-
-.macro color arg
-    lda #<arg
-    sta CGDATA
-    lda #>arg
-    sta CGDATA
-.endmacro
-
-.macro font0 bg, fg
-    color bg
-    color fg
-    color bg
-    color fg
-.endmacro
-
-.macro font1 bg, fg
-    color bg
-    color bg
-    color fg
-    color fg
-.endmacro
