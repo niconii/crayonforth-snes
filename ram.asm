@@ -6,11 +6,12 @@ Joy2Prs   := $06
 Slot0Bank := $08
 Slot1Bank := $09
 Flags     := $0a
-TextColor := $0b
-CursorX   := $0c
-CursorY   := $0d
-OffsetH   := $0e
-OffsetV   := $0f
+LineLen   := $0b
+TextColor := $0c
+CursorX   := $0d
+CursorY   := $0e
+ScrollV   := $0f
+VBlankPtr := $10
 
 .segment "BSS"
 LineBuffer := $0200

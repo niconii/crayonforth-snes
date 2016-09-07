@@ -28,6 +28,7 @@ $(TOOLS): build/tools/% : tools/%.rs
 	rustc -O $< -o $@
 
 $(FONTS):
+	build/tools/pcx2snes --1+1bpp gfx/font0.1bpp.pcx gfx/font1.1bpp.pcx build/gfx/font0+font1.2bpp
 	build/tools/pcx2snes --64x32font gfx/font0.1bpp.pcx gfx/font1.1bpp.pcx build/gfx/font0+font1.evens.2bpp build/gfx/font0+font1.odds.2bpp
 
 clean:
