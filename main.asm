@@ -1,9 +1,11 @@
 .p816
+.a16
+.i16
 .smart +
-.include "consts.asm"
-.include "macros.asm"
-.include "ram.asm"
+.include "consts.inc"
+.include "macros.inc"
 
+.include "ram.asm"
 .include "header.asm"
 
 .segment "FONT"
