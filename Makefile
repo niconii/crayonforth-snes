@@ -1,7 +1,7 @@
-INPUT    = main.asm
+INPUT    = src/main.asm
 OUTPUT   = program.sfc
 
-SOURCE   = $(wildcard *.asm) $(wildcard *.inc)
+SOURCE   = $(wildcard src/*.asm) $(wildcard src/*.inc)
 
 DIRS     = build/tools build/fonts
 
@@ -17,8 +17,8 @@ $(DIRS):
 
 build/$(OUTPUT): $(SOURCE) $(TOOLS) fonts
 	tools/build.sh >build/build.asm
-	ca65 main.asm -o build/main.o --listing build/program.lst
-	ld65 -C lorom.ld build/main.o -o $@
+	ca65 $(INPUT) -o build/program.o --listing build/program.lst
+	ld65 -C lorom.ld build/program.o -o $@
 	build/tools/checksum $@
 
 $(TOOLS): build/tools/% : tools/%.rs
