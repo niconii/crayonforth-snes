@@ -10,11 +10,11 @@
 
 .segment "FONT"
 font:
-    .incbin "build/gfx/font0+font1.2bpp"
+    .incbin "build/fonts/font0+font1.2bpp"
 fonte:
-    .incbin "build/gfx/font0+font1.evens.2bpp"
+    .incbin "build/fonts/font0+font1.evens.2bpp"
 fonto:
-    .incbin "build/gfx/font0+font1.odds.2bpp"
+    .incbin "build/fonts/font0+font1.odds.2bpp"
 
 .segment "CODE"
     .include "init.asm"
