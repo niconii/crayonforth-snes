@@ -16,10 +16,7 @@ MEMORY {
 SEGMENTS {
     FONT:       load = ROM0, type = ro, start = $808000;
     CODE:       load = ROM0, type = ro, start = $80b000;
-    EXTINFO:    load = ROM0, type = ro, start = $80ffb0;
-    HEADER:     load = ROM0, type = ro, start = $80ffc0, fillval = $20;
-    ROMINFO:    load = ROM0, type = ro, start = $80ffd5;
-    VECTORS:    load = ROM0, type = ro, start = $80ffe0;
+    HEADER:     load = ROM0, type = ro, start = $80ffb0;
 
     ROM1:       load = ROM1, type = ro, optional = yes;
     ROM2:       load = ROM2, type = ro, optional = yes;

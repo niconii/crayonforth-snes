@@ -1,8 +1,17 @@
-.segment "HEADER"
+; Extended cartridge header
+    .byte "N&"          ; maker code
+    .byte "TEST"        ; game code
+    .res 6
+    .byte $00           ; no expansion flash
+    .byte $00           ; no expansion RAM
+    .byte $00           ; not a special version
+    .byte $00           ; no custom co-processor    
+
+; Game name
     ;      123456789012345678901
     .byte "TEST ROM             "
 
-.segment "ROMINFO"
+; Cartridge header
     .byte $30           ; fast LoROM
     .byte $00           ; ROM, no RAM, no battery
     .byte $08           ; 256 KiB ROM
@@ -13,16 +22,7 @@
     .word $ffff         ; checksum complement (placeholder)
     .word $0000         ; checksum (placeholder)
 
-.segment "EXTINFO"
-    .byte "N&"          ; maker code
-    .byte "TEST"        ; game code
-    .res 6
-    .byte $00           ; no expansion flash
-    .byte $00           ; no expansion RAM
-    .byte $00           ; not a special version
-    .byte $00           ; no custom co-processor
-
-.segment "VECTORS"
+; Interrupt vectors
     .addr empty_handler
     .addr empty_handler
     .addr empty_handler ; 65816 COP

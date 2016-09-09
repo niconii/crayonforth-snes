@@ -6,7 +6,9 @@
 .include "macros.inc"
 
 .include "ram.asm"
-.include "header.asm"
+
+.segment "HEADER"
+    .include "header.asm"
 
 .segment "FONT"
 font:
