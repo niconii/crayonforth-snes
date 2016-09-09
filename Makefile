@@ -1,4 +1,4 @@
-INPUT    = src/main.asm
+INPUT    = src/rom.asm
 OUTPUT   = program.sfc
 
 SOURCE   = $(wildcard src/*.asm) $(wildcard src/*.inc)

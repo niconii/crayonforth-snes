@@ -337,4 +337,4 @@ clear_memory:
     ; A/memory = 16 bits, X/Y = 16 bits
     rep #%11111011
 
-    jmp start
+    jmp main
