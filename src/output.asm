@@ -42,6 +42,31 @@
     rts
 .endproc
 
+; .s ( ptr len -- )
+; Print a string
+.proc _s
+    tay
+    :
+        phy
+
+        sep #$20
+            lda ($00,x)
+        rep #$20
+        dpush t
+        jsr emit
+        inc $00,x
+
+        ply
+        dey
+    bne :-
+    lda $02,x
+    inx
+    inx
+    inx
+    inx
+    rts
+.endproc
+
 ; clearline ( -- )
 ; Clears line buffer
 .proc clearline

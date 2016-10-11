@@ -5,6 +5,11 @@
     ; Set up 64x28 console
     jsr c64init
 
+    dpush #.loword(msg)
+    dpush #MSG_LEN
+    jsr _s
+    jsr cr
+
 main_loop:
     lda Joy1Prs
 
