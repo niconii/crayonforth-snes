@@ -46,6 +46,7 @@
 ; Print a string
 .proc _s
     tay
+    lda #0
     :
         phy
 
