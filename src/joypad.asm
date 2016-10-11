@@ -2,7 +2,6 @@
 ; Update joypads
 .proc joy
     pha
-    phx
 
     sep #$20
         lda #%00000001
@@ -25,7 +24,6 @@
     and Joy2Cur
     sta Joy2Prs
 
-    plx
     pla
     rts
 .endproc
