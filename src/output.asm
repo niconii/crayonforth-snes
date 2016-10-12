@@ -95,3 +95,27 @@
     pla
     rts
 .endproc
+
+; banner ( -- )
+; Prints the title/copyright banner
+.proc banner
+    phb
+    pea ^banner1 << 8
+    plb
+    plb
+
+    dpush #.loword(banner1)
+    dpush #BANNER1_LEN
+    jsr _s
+    jsr cr
+
+    dpush #.loword(banner2)
+    dpush #BANNER2_LEN
+    jsr _s
+    jsr cr
+
+    jsr cr
+
+    plb
+    rts
+.endproc
