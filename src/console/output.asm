@@ -1,9 +1,9 @@
 ; cr ( -- )
 ; Advance to the start of the next line
 .proc cr
-    dpush Flags
+    dpush ScFlags
     ora #F_LINEDONE
-    dpop Flags
+    dpop ScFlags
     wai
     rts
 .endproc
@@ -11,9 +11,9 @@
 ; refresh ( -- )
 ; Refresh the screen
 .proc refresh
-    dpush Flags
+    dpush ScFlags
     ora #F_REFRESH
-    dpop Flags
+    dpop ScFlags
     rts
 .endproc
 
@@ -22,19 +22,19 @@
 .proc emit
     sep #$20
         xba
-        lda TextColor
+        lda TAttrib
         xba
     rep #$20
     dpush CursorX
     and #$00ff
     dpop y
-    cpy LineLen
+    cpy ScreenW
     bcs :+
-        dpop {LineBuffer,y}
+        dpop {LineBuf,y}
         bra end
     :
         jsr cr
-        dpop LineBuffer
+        dpop LineBuf
     end:
     inc CursorX
     inc CursorX
@@ -75,7 +75,7 @@
 
     sep #$20
         ; Zero-fill line buffer with DMA
-        ldy #LineBuffer
+        ldy #LineBuf
         sty WMADDL
         stz WMADDH
         lda #%00001000      ; a->b astep=+0 unit=[0]
@@ -86,7 +86,7 @@
         sty A1T7L
         lda #^zerobyte
         sta A1B7
-        ldy LineLen         ; len=LineLen
+        ldy ScreenW         ; len=ScreenW
         sty DAS7L
         lda #%10000000      ; initiate DMA
         sta MDMAEN

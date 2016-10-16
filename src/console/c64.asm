@@ -38,10 +38,10 @@
 
     sep #$20
         ; Set up variables
-        stz Flags
+        stz ScFlags
         lda #(64*2)
-        sta LineLen
-        stz TextColor
+        sta ScreenW
+        stz TAttrib
         stz CursorX
         stz CursorY
         stz ScrollV
@@ -136,7 +136,7 @@
 
     ; Check flags
     sep #$20
-        lda Flags
+        lda ScFlags
         bit #$40
     rep #$20
     bmi flinedone
@@ -151,7 +151,7 @@ frefresh:
 
 end:
     sep #$20
-        stz Flags
+        stz ScFlags
     rep #$20
 
     jsr joy
@@ -241,13 +241,13 @@ end:
 
     ldx #0
     :
-        ldy LineBuffer,x
+        ldy LineBuf,x
         sty VMDATAL
         inx
         inx
         inx
         inx
-    cpx LineLen
+    cpx ScreenW
     bne :-
 
     rep #$20
@@ -258,13 +258,13 @@ end:
 
     ldx #0
     :
-        ldy LineBuffer+2,x
+        ldy LineBuf+2,x
         sty VMDATAL
         inx
         inx
         inx
         inx
-    cpx LineLen
+    cpx ScreenW
     bne :-
     
     rep #$20
